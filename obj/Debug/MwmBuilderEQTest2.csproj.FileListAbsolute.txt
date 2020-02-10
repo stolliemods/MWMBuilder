@@ -1,0 +1,11 @@
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\bin\Debug\MwmBuilder.exe
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\bin\Debug\MwmBuilder.pdb
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\bin\Debug\AssimpNet.dll
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\bin\Debug\VRage.dll
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\bin\Debug\VRage.Library.dll
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\bin\Debug\VRage.Math.dll
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\bin\Debug\VRage.Render.dll
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\obj\Debug\MwmBuilderEQTest2.csproj.CopyComplete
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\obj\Debug\MwmBuilder.exe
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\obj\Debug\MwmBuilder.pdb
+C:\3D_Projects\MWMBSourceEQTest2\MwmBuilderEQTest2\obj\Debug\MwmBuilderEQTest2.csprojAssemblyReference.cache

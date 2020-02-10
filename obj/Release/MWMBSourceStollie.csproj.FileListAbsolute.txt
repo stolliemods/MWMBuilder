@@ -1,0 +1,11 @@
+C:\3D_Projects\MWMBSourceStollie\bin\Release\MwmBuilder.exe
+C:\3D_Projects\MWMBSourceStollie\bin\Release\MwmBuilder.pdb
+C:\3D_Projects\MWMBSourceStollie\bin\Release\AssimpNet.dll
+C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.dll
+C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.Library.dll
+C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.Math.dll
+C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.Render.dll
+C:\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csprojAssemblyReference.cache
+C:\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.CopyComplete
+C:\3D_Projects\MWMBSourceStollie\obj\Release\MwmBuilder.exe
+C:\3D_Projects\MWMBSourceStollie\obj\Release\MwmBuilder.pdb

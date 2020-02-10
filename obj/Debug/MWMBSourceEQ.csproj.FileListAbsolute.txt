@@ -1,0 +1,10 @@
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\bin\Debug\MwmBuilder.exe
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\bin\Debug\MwmBuilder.pdb
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\bin\Debug\AssimpNet.dll
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\bin\Debug\VRage.dll
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\bin\Debug\VRage.Library.dll
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\bin\Debug\VRage.Math.dll
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\bin\Debug\VRage.Render.dll
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\obj\Debug\MWMBSourceEQ.csproj.CopyComplete
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\obj\Debug\MwmBuilder.exe
+C:\3D_Projects\MWMBSourceEQ\MWMBSourceEQ\obj\Debug\MwmBuilder.pdb
