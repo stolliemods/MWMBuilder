@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\Users\Cheyne\AppData\Roaming\SpaceEngineers\Mods\AstroTest\Builders\MwmBuilder.exe-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{531D399F-0EE1-4EB9-B18B-463BB23972B9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>MwmBuilder</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>MwmBuilder</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AssimpNet">
+      <HintPath>lib\AssimpNet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VRage">
+      <HintPath>lib\VRage.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Library">
+      <HintPath>lib\VRage.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Math">
+      <HintPath>lib\VRage.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="VRage.Render">
+      <HintPath>lib\VRage.Render.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ContentBuildLogger.cs" />
+    <Compile Include="IMyBuildLogger.cs" />
+    <Compile Include="MyFileLogger.cs" />
+    <Compile Include="MyBuildLoggers.cs" />
+    <Compile Include="MyConsoleLogger.cs" />
+    <Compile Include="MessageType.cs" />
+    <Compile Include="MyMeshPartSolver.cs" />
+    <Compile Include="MyParser.cs" />
+    <Compile Include="MyModelBuilder.cs" />
+    <Compile Include="MyModelBuilderWorker.cs" />
+    <Compile Include="MyModelProcessor.cs" />
+    <Compile Include="MyProgramArgs.cs" />
+    <Compile Include="MyWorkDispatcher.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgramContext.cs" />
+    <Compile Include="Configuration\MyLODConfiguration.cs" />
+    <Compile Include="Configuration\MyMaterialConfiguration.cs" />
+    <Compile Include="Configuration\MyModelVector.cs" />
+    <Compile Include="Configuration\MyModelConfiguration.cs" />
+    <Compile Include="Configuration\MyMaterialsLib.cs" />
+    <Compile Include="Configuration\MyModelParameter.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
