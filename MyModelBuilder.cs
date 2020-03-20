@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using VRage.FileSystem;
 using VRageMath;
 using VRageRender.Import;
 
@@ -62,13 +63,24 @@ namespace MwmBuilder
           Func<string, MyMaterialConfiguration> getMaterialByRef,
           IMyBuildLogger logger)
         {
+            //logger.LogMessage(MessageType.Info, "**FileName: " + filename);
+            
             string withoutExtension = Path.GetFileNameWithoutExtension(filename);
+            //logger.LogMessage(MessageType.Info, "**Filename (without extension): " + withoutExtension);
+            
             string directoryName = Path.GetDirectoryName(filename);
-            string str1 = "content";
-            int num1 = directoryName.ToLower().LastIndexOf(str1) + str1.Length + 1;
-            string path1 = directoryName.Substring(num1, directoryName.Length - num1);
-            directoryName.Substring(0, num1);
-            Path.Combine(path1, withoutExtension + ".FBX");
+            //logger.LogMessage(MessageType.Info, "**Directory Name: " + directoryName);
+            
+            string contentDirectoryString = "content";
+            // int numberOfPathCharactersToCull = directoryName.ToLower().LastIndexOf(contentDirectoryString) + contentDirectoryString.Length + 1;
+            
+            var numberOfPathCharactersToCull = filename.LastIndexOf("models\\", StringComparison.OrdinalIgnoreCase);
+            //logger.LogMessage(MessageType.Info, "**Number of characters to cull: " + numberOfPathCharactersToCull);
+            string culledPath = directoryName.Substring(numberOfPathCharactersToCull, directoryName.Length - numberOfPathCharactersToCull); // Used to cull 'content' from path name to create relative pathing.
+            //logger.LogMessage(MessageType.Info, "**Culled Path: " + culledPath);
+
+            directoryName.Substring(0, numberOfPathCharactersToCull);
+            Path.Combine(directoryName, withoutExtension + ".FBX");
             AssimpContext assimpContext = new AssimpContext();
             assimpContext.SetConfig((PropertyConfig)new NormalSmoothingAngleConfig(66f));
             assimpContext.SetConfig((PropertyConfig)new FBXPreservePivotsConfig(false));
@@ -129,7 +141,7 @@ namespace MwmBuilder
                     }
                     catch (ArgumentException ex)
                     {
-                        logger.LogMessage(MessageType.Warning, "Problem when procesing materials: " + ex.Message, filename);
+                        logger.LogMessage(MessageType.Warning, "Problem when processing materials: " + ex.Message, filename);
                     }
                 }
             }
@@ -138,7 +150,8 @@ namespace MwmBuilder
             for (int index = 0; index < num2; ++index)
             {
                 string path = Path.Combine(directoryName, withoutExtension + "_LOD" + (object)(index + 1)) + ".fbx";
-                string str2 = Path.Combine(path1, withoutExtension + "_LOD" + (object)(index + 1));
+                string str2 = Path.Combine(culledPath, withoutExtension + "_LOD" + (object)(index + 1));
+
                 if (File.Exists(path))
                 {
                     if (overrideLods && lodDistances != null && (index < lodDistances.Length && (double)lodDistances[index] > 0.0))
@@ -159,6 +172,8 @@ namespace MwmBuilder
                             Model = str2,
                             RenderQuality = loD.RenderQuality
                         };
+
+                        
                         if (str2.ToLower() != loD.Model.ToLower())
                             logger.LogMessage(MessageType.Warning, "LOD" + (object)(index + 1) + " name differs " + str2 + " and " + loD.Model, filename);
                         myLodDescriptorList.Add(myLodDescriptor);

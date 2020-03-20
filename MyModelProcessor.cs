@@ -165,8 +165,11 @@ namespace MwmBuilder
             }
             foreach (KeyValuePair<string, string> texture in myMeshPartInfo.m_MaterialDesc.Textures)
             {
-                if (!string.IsNullOrEmpty(texture.Value) && !File.Exists(Path.Combine(outputDir, texture.Value)))
-                    logger.LogMessage(MessageType.Warning, "Texture " + texture.Value + " does not exists!", filename);
+                /*
+                if (!string.IsNullOrEmpty(texture.Value) && !File.Exists(Path.GetFullPath(texture.Value)))
+                    logger.LogMessage(MessageType.Warning, "Texture " + newPath + " does not exist!", filename);
+                */
+                    
             }
         }
 
@@ -201,7 +204,7 @@ namespace MwmBuilder
             for (int index = 0; index < this.m_meshes.Count; ++index)
                 this.ConvertMaterial(input.Materials[input.Meshes[this.m_meshes[index].MeshIndex].MaterialIndex], outputDir, logger, filename);
             this.ProcessSkeleton(input);
-            this.FillBonedata(input);
+            this.FillBonedata(input, logger);
             this.ProcessAnimations(input);
             if (this.BoneGridMapping.HasValue)
             {
@@ -246,23 +249,39 @@ namespace MwmBuilder
             }
         }
 
-        private void FillBonedata(Scene input)
+        private void FillBonedata(Scene input, IMyBuildLogger logger)
         {
+            // For each mesh loop.
             for (int index1 = 0; index1 < input.MeshCount; ++index1)
             {
+                // Check if mesh contains bones.
                 if (input.Meshes[index1].HasBones)
                 {
+                    logger.LogMessage(MessageType.Info, "Processing Vertex Bone Weights for Mesh: " + (index1 + 1));
+                    // For each vertex in the current mesh.
                     for (int index2 = 0; index2 < input.Meshes[index1].VertexCount; ++index2)
                     {
+                        // Create an array for floats of size 4
                         float[] numArray1 = new float[4];
-                        float[] array1 = this.vertToBoneWeight[index1][index2].Select<VertexWeight, float>((Func<VertexWeight, float>)(w => w.Weight)).ToArray<float>();
+
+                        // Creates an array of vertex bone weights (float format) by iterating through vertToBoneWeight - errors out when a vertex has no weight.
+                        // Index 1 is the mesh, Index 2 is a list of a struct containing vertex and its weight in that mesh.
+                        // private List<Dictionary<int, List<VertexWeight>>> vertToBoneWeight = new List<Dictionary<int, List<VertexWeight>>>();
+                        float[] vertexBoneWeightArray = this.vertToBoneWeight[index1][index2].Select(w => w.Weight).ToArray<float>();
+
+                        // Create an array for bytes of size 4
                         byte[] numArray2 = new byte[4];
-                        byte[] array2 = this.vertToBoneWeight[index1][index2].Select<VertexWeight, byte>((Func<VertexWeight, byte>)(w => (byte)w.VertexID)).ToArray<byte>();
-                        for (int index3 = 0; index3 < ((IEnumerable<float>)array1).Count<float>() && index3 < 4; ++index3)
+
+                        // Creates an array of vertex ID's (byte format) by iterating through vertToBoneWeight.
+                        byte[] vertexIdArray = this.vertToBoneWeight[index1][index2]
+                            .Select<VertexWeight, byte>((Func<VertexWeight, byte>)(w => (byte)w.VertexID)).ToArray<byte>();
+
+                        for (int index3 = 0; index3 < ((IEnumerable<float>)vertexBoneWeightArray).Count<float>() && index3 < 4; ++index3)
                         {
-                            numArray1[index3] = array1[index3];
-                            numArray2[index3] = array2[index3];
+                            numArray1[index3] = vertexBoneWeightArray[index3];
+                            numArray2[index3] = vertexIdArray[index3];
                         }
+
                         this.m_blendWeights.Add(new Vector4(numArray1[0], numArray1[1], numArray1[2], numArray1[3]));
                         this.m_blendIndices.Add(new Vector4I((int)numArray2[0], (int)numArray2[1], (int)numArray2[2], (int)numArray2[3]));
                     }
@@ -648,33 +667,41 @@ namespace MwmBuilder
             VRageRender.Import.Bone boneTree = this.CreateBoneTree(input.RootNode, (VRageRender.Import.Bone)null, 0);
             if (boneTree == null)
                 return (VRageRender.Import.Bone)null;
+
             this.m_bones.Clear();
+
             foreach (KeyValuePair<string, VRageRender.Import.Bone> keyValuePair in this.m_bonesByName)
             {
                 this.m_bones.Add(keyValuePair.Value);
                 this.m_bonesToIndex[keyValuePair.Key] = this.m_bones.IndexOf(keyValuePair.Value);
             }
+
             foreach (Assimp.Node node in this.FlattenHeirarchy(input.RootNode))
                 this.m_nodes.Add(new NodeDesc()
                 {
                     Name = node.Name,
                     ParentName = node.Parent != null ? node.Parent.Name : (string)null
                 });
+
             foreach (NodeDesc node1 in this.m_nodes)
             {
                 NodeDesc node = node1;
                 if (!string.IsNullOrEmpty(node.ParentName))
                     node.Parent = this.m_nodes.Find((Predicate<NodeDesc>)(x => x.Name == node.ParentName));
             }
+
             for (int index = 0; index < this.m_nodes.Count; ++index)
                 this.m_nodeToIndex[this.m_nodes[index].Name] = index;
+
             for (int index = 0; index < this.m_meshes.Count; ++index)
             {
                 Assimp.Mesh mesh = input.Meshes[this.m_meshes[index].MeshIndex];
                 this.vertToBoneWeight.Add(new Dictionary<int, List<VertexWeight>>());
-                this.ExtractBoneWeightsFromMesh(mesh, (IDictionary<int, List<VertexWeight>>)this.vertToBoneWeight[index]);
+                this.ExtractBoneWeightsFromMesh(mesh, vertToBoneWeight[index]);
             }
+
             this.FlattenTransforms(input.RootNode, boneTree, input);
+
             foreach (NodeDesc node in this.m_nodes)
             {
                 VRageRender.Import.Bone bone = this.m_bonesByName[node.Name];
@@ -682,8 +709,10 @@ namespace MwmBuilder
                 localTransform.Translation *= this.RescaleFactor;
                 bone.LocalTransform = localTransform;
             }
+
             foreach (VRageRender.Import.Bone bone in this.m_bones)
                 this.m_modelAnimations.Skeleton.Add(this.m_nodeToIndex[bone.Name]);
+
             return boneTree;
         }
 
@@ -715,9 +744,9 @@ namespace MwmBuilder
                     if (vertToBoneWeight.ContainsKey(vertexWeight.VertexID))
                         vertToBoneWeight[vertexWeight.VertexID].Add(new VertexWeight(vertID, vertexWeight.Weight));
                     else
-                        vertToBoneWeight[vertexWeight.VertexID] = new List<VertexWeight>((IEnumerable<VertexWeight>)new VertexWeight[1]
+                        vertToBoneWeight[vertexWeight.VertexID] = new List<VertexWeight>(new VertexWeight[1]
                         {
-              new VertexWeight(vertID, vertexWeight.Weight)
+                            new VertexWeight(vertID, vertexWeight.Weight)
                         });
                 }
             }
@@ -1168,14 +1197,14 @@ namespace MwmBuilder
             for (int index = 0; index < array.Length; index += 3)
             {
                 if (MyUtils.IsWrongTriangle(
-                	VF_Packer.UnpackPosition(this.m_packedVertices[array[index]]),
-                	VF_Packer.UnpackPosition(this.m_packedVertices[array[index + 1]]),
-                	VF_Packer.UnpackPosition(this.m_packedVertices[array[index + 2]])))
+                    VF_Packer.UnpackPosition(this.m_packedVertices[array[index]]),
+                    VF_Packer.UnpackPosition(this.m_packedVertices[array[index + 1]]),
+                    VF_Packer.UnpackPosition(this.m_packedVertices[array[index + 2]])))
                     logger.LogMessage(
-                    	MessageType.Warning,
-                    	"Model contains degenerated triangle (indices " +
-                    	(object)array[index] + " " + (object)array[index + 1] +
-                    	" " + (object)array[index + 2] + ")", filename);
+                        MessageType.Warning,
+                        "Model contains degenerated triangle (indices " +
+                        (object)array[index] + " " + (object)array[index + 1] +
+                        " " + (object)array[index + 2] + ")", filename);
             }
         }
     }

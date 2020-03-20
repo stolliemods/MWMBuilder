@@ -8,9 +8,23 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>MwmBuilder</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>MwmBuilder</RootNamespace>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -26,7 +40,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\BlenderPlugins\StollieMWMBuilder\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -73,6 +87,82 @@
     <Compile Include="Configuration\MyModelConfiguration.cs" />
     <Compile Include="Configuration\MyMaterialsLib.cs" />
     <Compile Include="Configuration\MyModelParameter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitattributes" />
+    <Content Include=".gitignore" />
+    <Content Include="bin\Debug\AssimpNet.dll" />
+    <Content Include="bin\Debug\MwmBuilder.exe" />
+    <Content Include="bin\Debug\MwmBuilder.pdb" />
+    <Content Include="bin\Debug\VRage.dll" />
+    <Content Include="bin\Debug\VRage.Library.dll" />
+    <Content Include="bin\Debug\VRage.Math.dll" />
+    <Content Include="bin\Debug\VRage.Render.dll" />
+    <Content Include="bin\Release\assimp32.dll" />
+    <Content Include="bin\Release\AssimpNet.dll" />
+    <Content Include="bin\Release\AssimpNet.xml" />
+    <Content Include="bin\Release\DirectShowLib-2005.dll" />
+    <Content Include="bin\Release\MwmBuilder.exe" />
+    <Content Include="bin\Release\MwmBuilder.pdb" />
+    <Content Include="bin\Release\MwmBuilderReadme.txt" />
+    <Content Include="bin\Release\SharpDX.Desktop.dll" />
+    <Content Include="bin\Release\SharpDX.Desktop.xml" />
+    <Content Include="bin\Release\SharpDX.dll" />
+    <Content Include="bin\Release\SharpDX.Mathematics.dll" />
+    <Content Include="bin\Release\SharpDX.Mathematics.xml" />
+    <Content Include="bin\Release\SharpDX.xml" />
+    <Content Include="bin\Release\VRage.Ansel.dll" />
+    <Content Include="bin\Release\VRage.dll" />
+    <Content Include="bin\Release\VRage.Library.dll" />
+    <Content Include="bin\Release\VRage.Library.xml" />
+    <Content Include="bin\Release\VRage.Math.dll" />
+    <Content Include="bin\Release\VRage.Math.xml" />
+    <Content Include="bin\Release\VRage.Math.XmlSerializers.dll" />
+    <Content Include="bin\Release\VRage.Render.dll" />
+    <Content Include="bin\Release\VRage.Render.xml" />
+    <Content Include="bin\Release\VRage.xml" />
+    <Content Include="bin\Release\VRage.XmlSerializers.dll" />
+    <Content Include="lib\AssimpNet.dll" />
+    <Content Include="lib\VRage.dll" />
+    <Content Include="lib\VRage.Library.dll" />
+    <Content Include="lib\VRage.Math.dll" />
+    <Content Include="lib\VRage.Render.dll" />
+    <Content Include="MWMBSourceStollie.pdb" />
+    <Content Include="obj\Debug\MWMBSourceEQ.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\MwmBuilder.exe" />
+    <Content Include="obj\Debug\MwmBuilder.pdb" />
+    <Content Include="obj\Debug\MwmBuilderEQTest2.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Release\MWMBSourceStollie.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Release\MwmBuilder.exe" />
+    <Content Include="obj\Release\MwmBuilder.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\MwmBuilder.exe.config" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\MWMBSourceEQ.csproj.CopyComplete" />
+    <None Include="obj\Debug\MWMBSourceEQ.csprojAssemblyReference.cache" />
+    <None Include="obj\Debug\MWMBSourceStollie.csprojAssemblyReference.cache" />
+    <None Include="obj\Debug\MwmBuilderEQTest2.csproj.CopyComplete" />
+    <None Include="obj\Debug\MwmBuilderEQTest2.csprojAssemblyReference.cache" />
+    <None Include="obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Release\MWMBSourceStollie.csproj.CopyComplete" />
+    <None Include="obj\Release\MWMBSourceStollie.csprojAssemblyReference.cache" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="obj\Release\TempPE\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
