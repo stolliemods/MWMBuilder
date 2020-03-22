@@ -224,7 +224,14 @@ namespace MwmBuilder
                     logger.LogMessage(MessageType.Warning, "Model contains open boundaries (" + (object)openBoundaries.Count + " edges)", "");
             }
             Dictionary<string, object> tags = this.ExportModelDataToTags(filename, outputDir, logger);
-            string outputPath = MyModelProcessor.GetOutputPath(filename, outputDir);
+
+            logger.LogMessage(MessageType.Warning, "OUTPUTPATH BEFORE CORRECTION: " + filename, "");
+
+            string outputPath = Path.ChangeExtension(filename, MyModelProcessor.C_MINER_WARS_MODEL_FORMAT_EXT);
+            //string outputPath = MyModelProcessor.GetOutputPath(filename, outputDir);
+
+            logger.LogMessage(MessageType.Warning, "OUTPUTPATH AFTER CORRECTION: " + outputPath, "");
+
             Trace.WriteLine(outputPath);
             try
             {
