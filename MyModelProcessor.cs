@@ -225,12 +225,12 @@ namespace MwmBuilder
             }
             Dictionary<string, object> tags = this.ExportModelDataToTags(filename, outputDir, logger);
 
-            logger.LogMessage(MessageType.Warning, "OUTPUTPATH BEFORE CORRECTION: " + filename, "");
+            // logger.LogMessage(MessageType.Warning, "OUTPUTPATH BEFORE CORRECTION: " + filename, "");
 
             string outputPath = Path.ChangeExtension(filename, MyModelProcessor.C_MINER_WARS_MODEL_FORMAT_EXT);
             //string outputPath = MyModelProcessor.GetOutputPath(filename, outputDir);
 
-            logger.LogMessage(MessageType.Warning, "OUTPUTPATH AFTER CORRECTION: " + outputPath, "");
+            // logger.LogMessage(MessageType.Warning, "OUTPUTPATH AFTER CORRECTION: " + outputPath, "");
 
             Trace.WriteLine(outputPath);
             try
