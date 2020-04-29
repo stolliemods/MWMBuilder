@@ -803,7 +803,11 @@ namespace MwmBuilder
                 }
                 for (int index2 = 0; index2 < input.Meshes[node.MeshIndices[index1]].VertexCount; ++index2)
                 {
-                    vector3List4.Add(Vector3.Normalize(Vector3.TransformNormal(MyModelProcessor.ToVRage(input.Meshes[node.MeshIndices[index1]].Tangents[index2]), MyModelProcessor.ToVRage(transform))));
+                    vector3List4.Add(Vector3.Normalize(
+                        Vector3.TransformNormal(
+                            MyModelProcessor.ToVRage(
+                                input.Meshes[node.MeshIndices[index1]].Tangents[index2]), MyModelProcessor.ToVRage(transform))
+                        ));
                     input.Meshes[node.MeshIndices[index1]].Tangents[index2] = MyModelProcessor.ToAssimp(vector3List4[index2]);
                 }
                 for (int index2 = 0; index2 < input.Meshes[node.MeshIndices[index1]].VertexCount; ++index2)

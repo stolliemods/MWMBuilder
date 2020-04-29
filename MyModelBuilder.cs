@@ -75,6 +75,10 @@ namespace MwmBuilder
             // int numberOfPathCharactersToCull = directoryName.ToLower().LastIndexOf(contentDirectoryString) + contentDirectoryString.Length + 1;
             
             var numberOfPathCharactersToCull = filename.LastIndexOf("models\\", StringComparison.OrdinalIgnoreCase);
+
+            if (numberOfPathCharactersToCull == -1)
+                throw new Exception("Couldn't find 'models\\' in path provided: " + filename);
+
             //logger.LogMessage(MessageType.Info, "**Number of characters to cull: " + numberOfPathCharactersToCull);
             string culledPath = directoryName.Substring(numberOfPathCharactersToCull, directoryName.Length - numberOfPathCharactersToCull); // Used to cull 'content' from path name to create relative pathing.
             //logger.LogMessage(MessageType.Info, "**Culled Path: " + culledPath);
