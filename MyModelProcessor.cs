@@ -59,7 +59,7 @@ namespace MwmBuilder
         private List<Tuple<float, int>> m_boneIndexHelper = new List<Tuple<float, int>>();
         private const string SECTION_NAME_PATTERN = "^(?<prefix>.+)_section_?(?<suffix>.*)$";
         private const int BonesPerAxis = 3;
-        private BoundingBox m_boundingBox;
+        private VRageMath.BoundingBox m_boundingBox;
         private BoundingSphere m_boundingSphere;
 
         public bool SwapWindingOrder { get; set; }
@@ -550,7 +550,7 @@ namespace MwmBuilder
             foreach (Assimp.Node child in root.Children)
             {
                 Matrix vrage = MyModelProcessor.ToVRage(child.Transform);
-                Matrix matrix = MyModelProcessor.Identity3DSMax * vrage * MyModelProcessor.ToVRage(child.GeometricTranslation) * MyModelProcessor.ToVRage(child.GeometricRotation) * MyModelProcessor.ToVRage(child.GeometricScaling) * parentMatrix;
+                Matrix matrix = MyModelProcessor.Identity3DSMax * vrage * parentMatrix;
                 Matrix parentMatrix1 = vrage * parentMatrix;
                 if (child.Metadata.Count != 0 && !child.HasMeshes)
                 {
@@ -629,7 +629,7 @@ namespace MwmBuilder
             foreach (Assimp.Node child in root.Children)
             {
                 Matrix transform1 = MyModelProcessor.ToVRage(child.Transform) * transform;
-                Matrix matrix = MyModelProcessor.ToVRage(child.GeometricScaling) * MyModelProcessor.ToVRage(child.GeometricRotation) * MyModelProcessor.ToVRage(child.GeometricTranslation) * transform1;
+                Matrix matrix = transform1;
                 for (int index = 0; index < child.MeshCount; ++index)
                 {
                     int meshIndex = child.MeshIndices[index];
