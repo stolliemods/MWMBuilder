@@ -81,31 +81,51 @@ namespace MwmBuilder
             }
         }
 
-        public void SetIndices(
-          Assimp.Mesh sourceMesh,
-          VRageRender.Import.Mesh mesh,
-          int[] indices,
-          List<Vector3> vertices,
-          int matHash)
+        public void SetIndices(Assimp.Mesh sourceMesh, VRageRender.Import.Mesh mesh, int[] indices, List<Vector3> vertices, string materialName)
         {
-            MyMeshPartInfo myMeshPartInfo;
-            if (!this.m_partContainer.TryGetValue(matHash, out myMeshPartInfo))
+            if (sourceMesh == null)
+                throw new System.Exception("given source mesh is null!");
+
+            if (mesh == null)
+                throw new System.Exception("given target mesh is null!");
+
+            if (indices == null)
+                throw new System.Exception($"Mesh '{sourceMesh.Name}': given indices array is null!");
+
+            if (vertices == null)
+                throw new System.Exception($"Mesh '{sourceMesh.Name}': given vertices list is null!");
+
+            if (materialName == null)
+                return;
+
+            int matHash = materialName.GetHashCode();
+            MyMeshPartInfo meshPart;
+            if (!this.m_partContainer.TryGetValue(matHash, out meshPart))
             {
-                myMeshPartInfo = new MyMeshPartInfo();
-                myMeshPartInfo.m_MaterialHash = matHash;
-                this.m_partContainer.Add(matHash, myMeshPartInfo);
+                meshPart = new MyMeshPartInfo();
+                meshPart.m_MaterialHash = matHash;
+                this.m_partContainer.Add(matHash, meshPart);
             }
-            mesh.StartIndex = myMeshPartInfo.m_indices.Count;
+
+            if (meshPart == null)
+                throw new System.Exception($"Mesh '{sourceMesh.Name}': Mesh part info retrieved as null for material='{materialName}' (hashCode={matHash})");
+
+            if (meshPart.m_indices == null)
+                throw new System.Exception($"Mesh '{sourceMesh.Name}': Mesh part info's indices list is null.");
+
+            mesh.StartIndex = meshPart.m_indices.Count;
             mesh.IndexCount = indices.Length;
             int vertexOffset = mesh.VertexOffset;
+
             for (int index = 0; index < sourceMesh.FaceCount * 3; index += 3)
             {
                 int num1 = indices[index] + vertexOffset;
                 int num2 = indices[index + 1] + vertexOffset;
                 int num3 = indices[index + 2] + vertexOffset;
-                myMeshPartInfo.m_indices.Add(num1);
-                myMeshPartInfo.m_indices.Add(num2);
-                myMeshPartInfo.m_indices.Add(num3);
+
+                meshPart.m_indices.Add(num1);
+                meshPart.m_indices.Add(num2);
+                meshPart.m_indices.Add(num3);
             }
         }
 

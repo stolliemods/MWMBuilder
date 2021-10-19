@@ -24,7 +24,6 @@ namespace MwmBuilder
         public static string ContentRootName = "Content";
         private static string[] KnownMaterialProperties = new string[1]
         {
-      "Technique"
         };
         private bool m_containsTexChannel0 = true;
         private bool m_containsTexChannel1 = true;
@@ -1169,17 +1168,33 @@ namespace MwmBuilder
             return new Vector2(v.X, 1f - v.Y);
         }
 
-        private void GenerateMeshParts(Scene input)
+        private void GenerateMeshParts(Scene scene)
         {
+            if (scene.Materials == null || scene.Materials.Count <= 0)
+                throw new Exception($"Scene '{scene}' has no materials!");
+
             this.m_MeshPartSolver.Clear();
             for (int index = 0; index < this.m_meshes.Count; ++index)
             {
-                VRageRender.Import.Mesh mesh1 = this.m_meshes[index];
-                Assimp.Mesh mesh2 = input.Meshes[this.m_meshes[index].MeshIndex];
-                int matHash = 0;
-                if (input.Materials[mesh2.MaterialIndex] != null && input.Materials[mesh2.MaterialIndex].Name != null)
-                    matHash = input.Materials[mesh2.MaterialIndex].Name.GetHashCode();
-                this.m_MeshPartSolver.SetIndices(mesh2, mesh1, mesh2.GetIndices(), this.m_vertices, matHash);
+                VRageRender.Import.Mesh targetMesh = this.m_meshes[index];
+                Assimp.Mesh sourceMesh = scene.Meshes[this.m_meshes[index].MeshIndex];
+
+                if (scene.Materials.Count <= sourceMesh.MaterialIndex)
+                    throw new Exception($"Mesh '{sourceMesh.Name}': Couldn't find material index={sourceMesh.MaterialIndex} in scene '{scene}'");
+
+                Material material = scene.Materials[sourceMesh.MaterialIndex];
+                string materialName = material.Name;
+
+                if (materialName == null)
+                    throw new Exception($"Mesh '{sourceMesh.Name}': Material index={sourceMesh.MaterialIndex} has null name!");
+
+                // old errorless code
+                //if(scene.Materials[sourceMesh.MaterialIndex] != null && scene.Materials[sourceMesh.MaterialIndex].Name != null)
+                //{
+                //    matHash = scene.Materials[sourceMesh.MaterialIndex].Name.GetHashCode();
+                //}
+
+                this.m_MeshPartSolver.SetIndices(sourceMesh, targetMesh, sourceMesh.GetIndices(), this.m_vertices, materialName);
             }
         }
 
