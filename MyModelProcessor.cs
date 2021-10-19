@@ -24,6 +24,7 @@ namespace MwmBuilder
         public static string ContentRootName = "Content";
         private static string[] KnownMaterialProperties = new string[1]
         {
+            "Technique"
         };
         private bool m_containsTexChannel0 = true;
         private bool m_containsTexChannel1 = true;
@@ -168,7 +169,7 @@ namespace MwmBuilder
                 if (!string.IsNullOrEmpty(texture.Value) && !File.Exists(Path.GetFullPath(texture.Value)))
                     logger.LogMessage(MessageType.Warning, "Texture " + newPath + " does not exist!", filename);
                 */
-                    
+
             }
         }
 
