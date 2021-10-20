@@ -64,16 +64,16 @@ namespace MwmBuilder
           IMyBuildLogger logger)
         {
             //logger.LogMessage(MessageType.Info, "**FileName: " + filename);
-            
+
             string withoutExtension = Path.GetFileNameWithoutExtension(filename);
             //logger.LogMessage(MessageType.Info, "**Filename (without extension): " + withoutExtension);
-            
+
             string directoryName = Path.GetDirectoryName(filename);
             //logger.LogMessage(MessageType.Info, "**Directory Name: " + directoryName);
-            
+
             string contentDirectoryString = "content";
             // int numberOfPathCharactersToCull = directoryName.ToLower().LastIndexOf(contentDirectoryString) + contentDirectoryString.Length + 1;
-            
+
             var numberOfPathCharactersToCull = filename.LastIndexOf("models\\", StringComparison.OrdinalIgnoreCase);
 
             if (numberOfPathCharactersToCull == -1)
@@ -88,35 +88,112 @@ namespace MwmBuilder
             AssimpContext assimpContext = new AssimpContext();
             assimpContext.SetConfig((PropertyConfig)new NormalSmoothingAngleConfig(66f));
             assimpContext.SetConfig((PropertyConfig)new FBXPreservePivotsConfig(false));
-            Scene input = assimpContext.ImportFile(filename,
-            	PostProcessSteps.CalculateTangentSpace |
-            	PostProcessSteps.JoinIdenticalVertices |
-            	PostProcessSteps.Triangulate |
-            	PostProcessSteps.GenerateSmoothNormals |
-            	PostProcessSteps.SplitLargeMeshes |
-            	PostProcessSteps.LimitBoneWeights |
-            	PostProcessSteps.SortByPrimitiveType |
-            	PostProcessSteps.FindInvalidData |
-            	PostProcessSteps.GenerateUVCoords |
-            	PostProcessSteps.FlipWindingOrder);
+            Scene scene = assimpContext.ImportFile(filename,
+                PostProcessSteps.CalculateTangentSpace |
+                PostProcessSteps.JoinIdenticalVertices |
+                PostProcessSteps.Triangulate |
+                PostProcessSteps.GenerateSmoothNormals |
+                PostProcessSteps.SplitLargeMeshes |
+                PostProcessSteps.LimitBoneWeights |
+                PostProcessSteps.SortByPrimitiveType |
+                PostProcessSteps.FindInvalidData |
+                PostProcessSteps.GenerateUVCoords |
+                PostProcessSteps.FlipWindingOrder);
 
             string outputDir1 = outputDir;
-            if (input.MeshCount == 0 && input.AnimationCount == 0)
+            if (scene.MeshCount == 0 && scene.AnimationCount == 0)
             {
                 throw new Exception("Number of meshes is 0 and no animation present!");
             }
             else
             {
-                logger.LogMessage(MessageType.Info, "Found " + input.MeshCount + " meshe(s).", "Meshes");
-                logger.LogMessage(MessageType.Info, "Found " + input.AnimationCount + " animation(s).", "Animations");
+                logger.LogMessage(MessageType.Info, "Found " + scene.MeshCount + " meshe(s).", "Meshes");
+                logger.LogMessage(MessageType.Info, "Found " + scene.AnimationCount + " animation(s).", "Animations");
             }
 
-            if (input.MaterialCount > 0)
+            #region check UV for 0-sized faces
+            if (scene.MeshCount > 0)
+            {
+                void LogUVError(Assimp.Mesh mesh, string message)
+                {
+                    //logger.LogMessage(MessageType.Error, $"Mesh '{mesh.Name}' {message}");
+                    throw new Exception($"Mesh '{mesh.Name}' {message}");
+                }
+
+                for (int meshIdx = 0; meshIdx < scene.MeshCount; meshIdx++)
+                {
+                    Assimp.Mesh mesh = scene.Meshes[meshIdx];
+
+                    if (mesh.TextureCoordinateChannels == null || mesh.TextureCoordinateChannels.Length == 0)
+                    {
+                        LogUVError(mesh, "has no UV map/channel!");
+                        continue;
+                    }
+
+                    int channels = 1; // don't care about other channels; if you want to, replace with: mesh.TextureCoordinateChannels.Length;
+                    for (int chIdx = 0; chIdx < channels; chIdx++)
+                    {
+                        if (!mesh.HasTextureCoords(0))
+                        {
+                            LogUVError(mesh, "has no UV map/channel!");
+                            continue;
+                        }
+
+                        List<Assimp.Vector3D> vectors = mesh.TextureCoordinateChannels[chIdx];
+                        if (vectors == null || vectors.Count == 0)
+                        {
+                            LogUVError(mesh, "has no UV vectors in first map/channel!");
+                            continue;
+                        }
+
+                        //Console.WriteLine($"  channel={chIdx}");
+                        //for (int v = 0; v < vectors.Count; v++)
+                        //{
+                        //    Console.WriteLine($"  {v} == {vectors[v]}");
+                        //}
+
+                        Assimp.Vector3D? lastVec = null;
+                        int sameVecInARow = 1;
+
+                        // these can be triangles, quads and prob more... so not safe to assume they're in pairs of 3.
+                        for (int v = 0; v < vectors.Count; v++)
+                        {
+                            Assimp.Vector3D vec = vectors[v];
+
+                            if (!lastVec.HasValue)
+                            {
+                                lastVec = vec;
+                            }
+                            else
+                            {
+                                if (lastVec.Value == vec)
+                                {
+                                    sameVecInARow++;
+
+                                    if (sameVecInARow >= 3)
+                                    {
+                                        LogUVError(mesh, "has UV with 3 identical vectors in a row, this likely means you have a face with an UV is 0-size which will cause SE to make the entire model shaderless.");
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    lastVec = vec;
+                                    sameVecInARow = 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            if (scene.MaterialCount > 0)
             {
                 List<MyMaterialConfiguration> materialConfigurationList = new List<MyMaterialConfiguration>();
-                for (int index = 0; index < input.MaterialCount; ++index)
+                for (int index = 0; index < scene.MaterialCount; ++index)
                 {
-                    MyMaterialConfiguration materialConfiguration = getMaterialByRef(input.Materials[index].Name);
+                    MyMaterialConfiguration materialConfiguration = getMaterialByRef(scene.Materials[index].Name);
                     if (materialConfiguration != null)
                         materialConfigurationList.Add(materialConfiguration);
                 }
@@ -177,7 +254,7 @@ namespace MwmBuilder
                             RenderQuality = loD.RenderQuality
                         };
 
-                        
+
                         if (str2.ToLower() != loD.Model.ToLower())
                             logger.LogMessage(MessageType.Warning, "LOD" + (object)(index + 1) + " name differs " + str2 + " and " + loD.Model, filename);
                         myLodDescriptorList.Add(myLodDescriptor);
@@ -194,7 +271,7 @@ namespace MwmBuilder
             processor.BoneGridMapping = configuration.BoneGridSize;
             processor.BoneMapping = configuration.BoneMapping != null ? ((IEnumerable<MyModelVector>)configuration.BoneMapping).Select<MyModelVector, Vector3>((Func<MyModelVector, Vector3>)(s => new Vector3((float)s.X, (float)s.Y, (float)s.Z))).ToArray<Vector3>() : (Vector3[])null;
             processor.HavokCollisionShapes = havokCollisionShapes;
-            processor.Process(input, filename, outputDir1, checkOpenBoundaries, logger);
+            processor.Process(scene, filename, outputDir1, checkOpenBoundaries, logger);
             if (configuration.BoneGridSize.HasValue)
                 configuration.BoneMapping = ((IEnumerable<Vector3>)processor.BoneMapping).Select<Vector3, MyModelVector>((Func<Vector3, MyModelVector>)(s => (MyModelVector)s)).ToArray<MyModelVector>();
             List<MyMaterialConfiguration> materialConfigurationList1 = new List<MyMaterialConfiguration>();
