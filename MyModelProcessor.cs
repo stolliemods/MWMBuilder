@@ -24,7 +24,7 @@ namespace MwmBuilder
         public static string ContentRootName = "Content";
         private static string[] KnownMaterialProperties = new string[1]
         {
-      "Technique"
+            "Technique"
         };
         private bool m_containsTexChannel0 = true;
         private bool m_containsTexChannel1 = true;
@@ -169,7 +169,7 @@ namespace MwmBuilder
                 if (!string.IsNullOrEmpty(texture.Value) && !File.Exists(Path.GetFullPath(texture.Value)))
                     logger.LogMessage(MessageType.Warning, "Texture " + newPath + " does not exist!", filename);
                 */
-                    
+
             }
         }
 
@@ -781,43 +781,67 @@ namespace MwmBuilder
                 this.FlattenAllTransforms(child, input);
         }
 
-        private void TransformScene(Assimp.Node node, Matrix4x4 transform, Scene input)
+        private void TransformScene(Assimp.Node node, Matrix4x4 transform, Scene scene)
         {
             if (!node.HasChildren)
                 return;
-            for (int index1 = 0; index1 < node.MeshCount; ++index1)
+
+            if (scene.Meshes == null)
+                throw new Exception($"Scene '{scene}' has no meshes");
+
+            for (int meshIndex = 0; meshIndex < node.MeshCount; ++meshIndex)
             {
-                List<Vector3> vector3List1 = new List<Vector3>();
-                List<Vector3> vector3List2 = new List<Vector3>();
-                List<Vector3> vector3List3 = new List<Vector3>();
-                List<Vector3> vector3List4 = new List<Vector3>();
-                for (int index2 = 0; index2 < input.Meshes[node.MeshIndices[index1]].VertexCount; ++index2)
+                List<Vector3> vertexList = new List<Vector3>();
+                List<Vector3> normalsList = new List<Vector3>();
+                List<Vector3> biTangentsList = new List<Vector3>();
+                List<Vector3> tangentsList = new List<Vector3>();
+
+                if (node.MeshIndices == null)
+                    throw new Exception($"Node '{node.Name}' has null MeshIndices");
+
+                if (node.MeshIndices.Count <= meshIndex)
+                    throw new Exception($"Node '{node.Name}' has no meshIndex={meshIndex}; total indices={node.MeshIndices.Count}");
+
+                int id = node.MeshIndices[meshIndex];
+
+                if (scene.Meshes.Count <= id)
+                    throw new Exception($"Scene '{scene}' does not have mesh id={id} (from node '{node.Name}')");
+
+                Assimp.Mesh mesh = scene.Meshes[id];
+
+                for (int i = 0; i < mesh.VertexCount; ++i)
                 {
-                    vector3List1.Add(Vector3.Transform(MyModelProcessor.ToVRage(input.Meshes[node.MeshIndices[index1]].Vertices[index2]), MyModelProcessor.ToVRage(transform)));
-                    input.Meshes[node.MeshIndices[index1]].Vertices[index2] = MyModelProcessor.ToAssimp(vector3List1[index2]);
+                    vertexList.Add(Vector3.Transform(MyModelProcessor.ToVRage(mesh.Vertices[i]), MyModelProcessor.ToVRage(transform)));
+
+                    mesh.Vertices[i] = MyModelProcessor.ToAssimp(vertexList[i]);
                 }
-                for (int index2 = 0; index2 < input.Meshes[node.MeshIndices[index1]].VertexCount; ++index2)
+
+                for (int i = 0; i < mesh.VertexCount; ++i)
                 {
-                    vector3List2.Add(Vector3.Normalize(Vector3.TransformNormal(MyModelProcessor.ToVRage(input.Meshes[node.MeshIndices[index1]].Normals[index2]), MyModelProcessor.ToVRage(transform))));
-                    input.Meshes[node.MeshIndices[index1]].Normals[index2] = MyModelProcessor.ToAssimp(vector3List2[index2]);
+                    normalsList.Add(Vector3.Normalize(Vector3.TransformNormal(MyModelProcessor.ToVRage(mesh.Normals[i]), MyModelProcessor.ToVRage(transform))));
+
+                    mesh.Normals[i] = MyModelProcessor.ToAssimp(normalsList[i]);
                 }
-                for (int index2 = 0; index2 < input.Meshes[node.MeshIndices[index1]].VertexCount; ++index2)
+
+                for (int i = 0; i < mesh.VertexCount; ++i)
                 {
-                    vector3List4.Add(Vector3.Normalize(
-                        Vector3.TransformNormal(
-                            MyModelProcessor.ToVRage(
-                                input.Meshes[node.MeshIndices[index1]].Tangents[index2]), MyModelProcessor.ToVRage(transform))
-                        ));
-                    input.Meshes[node.MeshIndices[index1]].Tangents[index2] = MyModelProcessor.ToAssimp(vector3List4[index2]);
+                    tangentsList.Add(Vector3.Normalize(Vector3.TransformNormal(MyModelProcessor.ToVRage(mesh.Tangents[i]), MyModelProcessor.ToVRage(transform))));
+
+                    mesh.Tangents[i] = MyModelProcessor.ToAssimp(tangentsList[i]);
                 }
-                for (int index2 = 0; index2 < input.Meshes[node.MeshIndices[index1]].VertexCount; ++index2)
+
+                for (int i = 0; i < mesh.VertexCount; ++i)
                 {
-                    vector3List3.Add(Vector3.Normalize(Vector3.TransformNormal(MyModelProcessor.ToVRage(input.Meshes[node.MeshIndices[index1]].BiTangents[index2]), MyModelProcessor.ToVRage(transform))));
-                    input.Meshes[node.MeshIndices[index1]].BiTangents[index2] = MyModelProcessor.ToAssimp(vector3List3[index2]);
+                    biTangentsList.Add(Vector3.Normalize(Vector3.TransformNormal(MyModelProcessor.ToVRage(mesh.BiTangents[i]), MyModelProcessor.ToVRage(transform))));
+
+                    mesh.BiTangents[i] = MyModelProcessor.ToAssimp(biTangentsList[i]);
                 }
             }
+
             foreach (Assimp.Node child in node.Children)
-                this.TransformScene(child, node.Transform, input);
+            {
+                this.TransformScene(child, node.Transform, scene);
+            }
         }
 
         private bool IsSkinned(Assimp.Node node, Scene input)
@@ -1145,17 +1169,33 @@ namespace MwmBuilder
             return new Vector2(v.X, 1f - v.Y);
         }
 
-        private void GenerateMeshParts(Scene input)
+        private void GenerateMeshParts(Scene scene)
         {
+            if (scene.Materials == null || scene.Materials.Count <= 0)
+                throw new Exception($"Scene '{scene}' has no materials!");
+
             this.m_MeshPartSolver.Clear();
             for (int index = 0; index < this.m_meshes.Count; ++index)
             {
-                VRageRender.Import.Mesh mesh1 = this.m_meshes[index];
-                Assimp.Mesh mesh2 = input.Meshes[this.m_meshes[index].MeshIndex];
-                int matHash = 0;
-                if (input.Materials[mesh2.MaterialIndex] != null && input.Materials[mesh2.MaterialIndex].Name != null)
-                    matHash = input.Materials[mesh2.MaterialIndex].Name.GetHashCode();
-                this.m_MeshPartSolver.SetIndices(mesh2, mesh1, mesh2.GetIndices(), this.m_vertices, matHash);
+                VRageRender.Import.Mesh targetMesh = this.m_meshes[index];
+                Assimp.Mesh sourceMesh = scene.Meshes[this.m_meshes[index].MeshIndex];
+
+                if (scene.Materials.Count <= sourceMesh.MaterialIndex)
+                    throw new Exception($"Mesh '{sourceMesh.Name}': Couldn't find material index={sourceMesh.MaterialIndex} in scene '{scene}'");
+
+                Material material = scene.Materials[sourceMesh.MaterialIndex];
+                string materialName = material.Name;
+
+                if (materialName == null)
+                    throw new Exception($"Mesh '{sourceMesh.Name}': Material index={sourceMesh.MaterialIndex} has null name!");
+
+                // old errorless code
+                //if(scene.Materials[sourceMesh.MaterialIndex] != null && scene.Materials[sourceMesh.MaterialIndex].Name != null)
+                //{
+                //    matHash = scene.Materials[sourceMesh.MaterialIndex].Name.GetHashCode();
+                //}
+
+                this.m_MeshPartSolver.SetIndices(sourceMesh, targetMesh, sourceMesh.GetIndices(), this.m_vertices, materialName);
             }
         }
 
