@@ -63,15 +63,15 @@ namespace MwmBuilder
           Func<string, MyMaterialConfiguration> getMaterialByRef,
           IMyBuildLogger logger)
         {
-            //logger.LogMessage(MessageType.Info, "**FileName: " + filename);
+            logger.LogMessage(MessageType.Info, "**FileName: " + filename);
 
             string withoutExtension = Path.GetFileNameWithoutExtension(filename);
-            //logger.LogMessage(MessageType.Info, "**Filename (without extension): " + withoutExtension);
+            logger.LogMessage(MessageType.Info, "**Filename (without extension): " + withoutExtension);
 
             string directoryName = Path.GetDirectoryName(filename);
-            //logger.LogMessage(MessageType.Info, "**Directory Name: " + directoryName);
+            logger.LogMessage(MessageType.Info, "**Directory Name: " + directoryName);
 
-            string contentDirectoryString = "content";
+            //string contentDirectoryString = "content";
             // int numberOfPathCharactersToCull = directoryName.ToLower().LastIndexOf(contentDirectoryString) + contentDirectoryString.Length + 1;
 
             var numberOfPathCharactersToCull = filename.LastIndexOf("models\\", StringComparison.OrdinalIgnoreCase);
@@ -79,9 +79,9 @@ namespace MwmBuilder
             if (numberOfPathCharactersToCull == -1)
                 throw new Exception("Couldn't find 'models\\' in path provided: " + filename);
 
-            //logger.LogMessage(MessageType.Info, "**Number of characters to cull: " + numberOfPathCharactersToCull);
+            logger.LogMessage(MessageType.Info, "**Number of characters to cull: " + numberOfPathCharactersToCull);
             string culledPath = directoryName.Substring(numberOfPathCharactersToCull, directoryName.Length - numberOfPathCharactersToCull); // Used to cull 'content' from path name to create relative pathing.
-            //logger.LogMessage(MessageType.Info, "**Culled Path: " + culledPath);
+            logger.LogMessage(MessageType.Info, "**Culled Path: " + culledPath);
 
             directoryName.Substring(0, numberOfPathCharactersToCull);
             Path.Combine(directoryName, withoutExtension + ".FBX");
@@ -172,7 +172,8 @@ namespace MwmBuilder
 
                                     if (sameVecInARow >= 3)
                                     {
-                                        LogUVError(mesh, "has UV with 3 identical vectors in a row, this likely means you have a face with an UV is 0-size which will cause SE to make the entire model shaderless.");
+                                        // Changed this to a warning instead of a LogUVError
+                                        logger.LogMessage(MessageType.Warning, mesh.ToString() + "has UV with 3 identical vectors in a row, this likely means you have a face with an UV is 0-size which will cause SE to make the entire model shaderless.");
                                         break;
                                     }
                                 }
