@@ -1171,7 +1171,7 @@ namespace MwmBuilder
 
         private void GenerateMeshParts(Scene scene)
         {
-            if (scene.Materials == null || scene.Materials.Count <= 0)
+            if (m_meshes.Count != 0 && (scene.Materials == null || scene.Materials.Count <= 0))
                 throw new Exception($"Scene '{scene}' has no materials!");
 
             this.m_MeshPartSolver.Clear();
