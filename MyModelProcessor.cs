@@ -268,9 +268,9 @@ namespace MwmBuilder
                     // For each vertex in the current mesh.
                     for (int index2 = 0; index2 < input.Meshes[index1].VertexCount; ++index2)
                     {
-                        // Check is any of the meshes using bones have zero vertex weights
+                        // Check if bones have vertices to interact with from assigned Vertex Groups, if bone is missing an assigned Vertex Group it will error out.
                         if (vertToBoneWeight.Count <= index1 || !vertToBoneWeight[index1].ContainsKey(index2))
-                            throw new Exception($"Scene '{input}' has vertices with no weights!");
+                            throw new Exception($"Scene '{input}' has bones without an assigned vertex group!");
 
                         // Create an array for floats of size 4
                         float[] numArray1 = new float[4];
