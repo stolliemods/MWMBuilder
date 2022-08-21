@@ -268,6 +268,10 @@ namespace MwmBuilder
                     // For each vertex in the current mesh.
                     for (int index2 = 0; index2 < input.Meshes[index1].VertexCount; ++index2)
                     {
+                        // Check is any of the meshes using bones have zero vertex weights
+                        if (vertToBoneWeight.Count <= index1 || !vertToBoneWeight[index1].ContainsKey(index2))
+                            throw new Exception($"Scene '{input}' has vertices with no weights!");
+
                         // Create an array for floats of size 4
                         float[] numArray1 = new float[4];
 
