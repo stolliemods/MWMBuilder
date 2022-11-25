@@ -173,7 +173,7 @@ namespace MwmBuilder
                                     if (sameVecInARow >= 3)
                                     {
                                         // Changed this to a warning instead of a LogUVError
-                                        logger.LogMessage(MessageType.Warning, mesh.ToString() + "has UV with 3 identical vectors in a row, this likely means you have a face with an UV is 0-size which will cause SE to make the entire model shaderless.");
+                                        logger.LogMessage(MessageType.Warning, mesh.Name.ToString() + " has UV with 3 identical vectors in a row, this likely means you have a face with an UV is 0-size which will cause SE to make the entire model shaderless.");
                                         break;
                                     }
                                 }
