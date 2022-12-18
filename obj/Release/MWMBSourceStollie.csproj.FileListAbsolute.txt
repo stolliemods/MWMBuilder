@@ -26,3 +26,4 @@ C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MwmBuilder
 C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.AssemblyReference.cache
 C:\Users\cheyn\Google Drive\3D_Projects\SpaceEngineers\Assets\Tools\MWMBuilder\MwmBuilder.exe
 C:\Users\cheyn\Google Drive\3D_Projects\SpaceEngineers\Assets\Tools\MWMBuilder\MwmBuilder.pdb
+C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.AssemblyReference.cache
