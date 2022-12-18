@@ -1,29 +1,7 @@
-C:\3D_Projects\MWMBSourceStollie\bin\Release\MwmBuilder.exe
-C:\3D_Projects\MWMBSourceStollie\bin\Release\MwmBuilder.pdb
-C:\3D_Projects\MWMBSourceStollie\bin\Release\AssimpNet.dll
-C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.dll
-C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.Library.dll
-C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.Math.dll
-C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.Render.dll
-C:\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.CopyComplete
-C:\3D_Projects\MWMBSourceStollie\obj\Release\MwmBuilder.exe
-C:\3D_Projects\MWMBSourceStollie\obj\Release\MwmBuilder.pdb
-C:\3D_Projects\MWMBSourceStollie\bin\Release\SharpDX.Mathematics.dll
-C:\3D_Projects\MWMBSourceStollie\bin\Release\DirectShowLib-2005.dll
-C:\3D_Projects\MWMBSourceStollie\bin\Release\VRage.Ansel.dll
-C:\3D_Projects\MWMBSourceStollie\bin\Release\SharpDX.Desktop.dll
-C:\3D_Projects\MWMBSourceStollie\bin\Release\SharpDX.Mathematics.xml
-C:\3D_Projects\MWMBSourceStollie\bin\Release\SharpDX.Desktop.xml
-C:\3D_Projects\BlenderPlugins\StollieMWMBuilder\MwmBuilder.exe
-C:\3D_Projects\BlenderPlugins\StollieMWMBuilder\MwmBuilder.pdb
-C:\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csprojAssemblyReference.cache
-C:\Users\cheyn\Google Drive\3D_Projects\BlenderPlugins\StollieMWMBuilder\MwmBuilder.exe
-C:\Users\cheyn\Google Drive\3D_Projects\BlenderPlugins\StollieMWMBuilder\MwmBuilder.pdb
+C:\Users\cheyn\Google Drive\3D_Projects\SpaceEngineers\Assets\Tools\MWMBuilder\MwmBuilder.exe
+C:\Users\cheyn\Google Drive\3D_Projects\SpaceEngineers\Assets\Tools\MWMBuilder\MwmBuilder.pdb
+C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.AssemblyReference.cache
 C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.CoreCompileInputs.cache
 C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.CopyComplete
 C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MwmBuilder.exe
 C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MwmBuilder.pdb
-C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.AssemblyReference.cache
-C:\Users\cheyn\Google Drive\3D_Projects\SpaceEngineers\Assets\Tools\MWMBuilder\MwmBuilder.exe
-C:\Users\cheyn\Google Drive\3D_Projects\SpaceEngineers\Assets\Tools\MWMBuilder\MwmBuilder.pdb
-C:\Users\cheyn\Google Drive\3D_Projects\MWMBSourceStollie\obj\Release\MWMBSourceStollie.csproj.AssemblyReference.cache
